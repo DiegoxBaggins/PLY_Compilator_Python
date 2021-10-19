@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="center-2">
+                <div class="subheader">
+                    <span> Write code and press "Compilar"</span>
+                </div>
+                <form method="post">
+                    <div class="div-txt">
+                        <label for="txt1">Entrada:</label>
+                        <textarea name="txt1" id="txt1" class="txtArea">{{ text1 }}</textarea>
+                    </div>
+                    <div class="div-medio">
+                        <input type="submit" name="procesar" value="Compilar" class="btn-upload"/>
+                        <img src="{{ url_for('static', filename='images/cat.gif') }}" alt="Cat" >
+                        <br>
+                        <h4>Optimizaciones</h4>
+                        <input type="submit" name="procesar" value="Mirilla" class="btn-upload"/>
+                        <input type="submit" name="procesar" value="Bloques" class="btn-upload"/>
+                    </div>
+                    <div class="div-txt">
+                        <label for="txt2">Salida:</label>
+                        <textarea name="txt2" id="txt2"  class="txtArea" readOnly>{{ text2 }}</textarea>
+                    </div>
+                </form>
+                <div class="clearfix"> </div>
+            </div>
+{% endblock %}

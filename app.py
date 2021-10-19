@@ -1,11 +1,59 @@
-from flask import Flask
+import sys
+import json
+from flask import Flask, render_template, url_for, redirect, request
+
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+def slash():  # put application's code here
+    return redirect(url_for('home'))
+
+
+@app.route('/home')
+def home():  # put application's code here
+    return render_template('index.html')
+
+
+@app.route('/analisis',  methods=["POST", "GET"])
+def analisis():  # put application's code here
+    if request.method == "POST":
+        tipoEntrada = request.form['procesar']
+        dic = request.form
+        codigo = dic["txt1"]
+        resultado = "Resultado"
+        if tipoEntrada == "Compilar":
+            resultado = "Compilar"
+        elif tipoEntrada == "Mirilla":
+            resultado = "Optimizacion de Mirilla"
+        elif tipoEntrada == "Bloques":
+            resultado = "Optimizacion por bloques"
+        return render_template('analisis.html', text1=codigo, text2=resultado)
+    else:
+        return render_template('analisis.html', text1="escribe aqui tu codigo", text2="Output Console")
+
+
+@app.route('/reports',  methods=["POST", "GET"])
+def reports():  # put application's code here
+    errores = []
+    simbolos = []
+    bandVar = False
+    bandErr = False
+    bandOpt = False
+    if request.method == "POST":
+        tipoEntrada = request.form['procesar']
+        if tipoEntrada == "Simbolos":
+            bandVar = True
+        elif tipoEntrada == "Errores":
+            bandErr = True
+        elif tipoEntrada == "Optimizacion":
+            bandOpt = True
+        return render_template('reports.html', errores=errores, simbols=simbolos, bandVar=bandVar, bandErr=bandErr,
+                               bandOpt=bandOpt)
+    else:
+        return render_template('reports.html', errores=errores, simbols=simbolos, bandVar=bandVar, bandErr=bandErr,
+                               bandOpt=bandOpt)
 
 
 if __name__ == '__main__':

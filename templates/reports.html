@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class = center-image>
+        <img src="{{ url_for('static', filename='images/the-hang-over.gif') }}" alt="Allan" >
+        <form method="post">
+            <input type="submit" name="procesar" value="Simbolos" class="btn-upload"/>
+            <input type="submit" name="procesar" value="Errores" class="btn-upload"/>
+            <input type="submit" name="procesar" value="Optimizacion" class="btn-upload"/>
+        </form>
+    </div>
+    <div class="clearfix"> </div>
+    {% if bandVar %}
+        <div class="div-table">
+        <table class="default">
+            <caption>Tabla de Variables</caption>
+            <tr>
+                <th>Id</th>
+                <th>Tipo</th>
+                <th>Ambito</th>
+                <th>Linea</th>
+                <th>Columna</th>
+            </tr>
+            {% for simbol in simbols %}
+            <tr>
+            {% for simbolo in simbol %}
+                <th>{{ simbolo }}</th>
+            {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+    {% if bandErr %}
+        <div class="div-table">
+        <table class="default">
+            <caption>Tabla de Errores</caption>
+            <tr>
+                <th>No.</th>
+                <th>Descripcion</th>
+                <th>Linea</th>
+                <th>Columna</th>
+                <th>Fecha y Hora</th>
+            </tr>
+            {% for error in errores %}
+            <tr>
+               {% for err in error %}
+                <th>{{ err }}</th>
+            {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+    {% if bandOpt %}
+        <div class="div-table">
+        <table class="default">
+            <caption>Optimizacion</caption>
+            <tr>
+                <th>No.</th>
+                <th>Descripcion</th>
+                <th>Linea</th>
+                <th>Columna</th>
+                <th>Fecha y Hora</th>
+            </tr>
+            {% for error in errores %}
+            <tr>
+               {% for err in error %}
+                <th>{{ err }}</th>
+            {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+{% endblock %}
