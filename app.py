@@ -1,6 +1,8 @@
 import sys
 import json
 from flask import Flask, render_template, url_for, redirect, request
+from Symbol.Generador import *
+from Analyzer.Grammar import parse
 
 
 app = Flask(__name__)
@@ -24,7 +26,7 @@ def analisis():  # put application's code here
         codigo = dic["txt1"]
         resultado = "Resultado"
         if tipoEntrada == "Compilar":
-            resultado = "Compilar"
+            resultado = compilar(codigo)
         elif tipoEntrada == "Mirilla":
             resultado = "Optimizacion de Mirilla"
         elif tipoEntrada == "Bloques":
@@ -58,3 +60,16 @@ def reports():  # put application's code here
 
 if __name__ == '__main__':
     app.run()
+
+
+def compilar(entrada):
+    genAux = Generador()
+    genAux.limpiarTodo()
+    generator = genAux.getInstancia()
+
+    newEnv = Entorno(None)
+    ast = parse(entrada)
+    for instr in ast:
+        instr.compilar(newEnv)
+
+    return generator.getCodigo()
