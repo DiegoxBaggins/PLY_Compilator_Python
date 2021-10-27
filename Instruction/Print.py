@@ -16,7 +16,21 @@ class Print(Expresion):
             genAux = Generador()
             generador = genAux.getInstancia()
 
-            if valor.tipo == Tipo.INT:
-                generador.agregarPrint("d", valor.valor)
+            if valor.tipo == Tipo.INT or valor.tipo == Tipo.FLOAT:
+                generador.agregarPrint("f", valor.valor)
+            elif valor.tipo == Tipo.BOOLEAN:
+                labelSalir = generador.agregarLabel()
+                generador.printLabel(val.truel)
+                generador.printTrue()
+
+                generador.printGoto(labelSalir)
+
+                generador.printLabel(val.falsel)
+                generador.printFalse()
+
+                generador.printLabel(labelSalir)
             else:
                 print("Incompleto")
+
+            if self.salto:
+                generador.agregarPrint("c", 10)

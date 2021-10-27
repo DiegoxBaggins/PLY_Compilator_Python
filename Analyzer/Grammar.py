@@ -20,6 +20,7 @@ from Arreglos.Funcs import *
 from Expresiones.Literal import *
 from Expresiones.Aritmetico import *
 from Expresiones.Relacional import *
+from Expresiones.Logica import *
 from Expresiones.Nativas import *
 from Expresiones.Acceso import *
 from Expresiones.LlamadaFunc import *
@@ -472,7 +473,7 @@ def p_expresion(t):
         if t[1] == "-":
             t[0] = Aritmetico(t[2], t[2], OperacionAritmetica.MENOS, t.lineno(1), t.lexpos(0))
         elif t[1] == "!":
-            t[0] = Relacional(t[2], t[2], OperacionRelacional.NOT, t.lineno(1), t.lexpos(0))
+            t[0] = Logica(t[2], t[2], OperacionLogica.NOT, t.lineno(1), t.lexpos(0))
     else:
         if t[2] == "+":
             t[0] = Aritmetico(t[1], t[3], OperacionAritmetica.SUMA, t.lineno(2), t.lexpos(0))
@@ -499,9 +500,9 @@ def p_expresion(t):
         elif t[2] == "!=":
             t[0] = Relacional(t[1], t[3], OperacionRelacional.DISTINTOS, t.lineno(2), t.lexpos(2))
         elif t[2] == "||":
-            t[0] = Relacional(t[1], t[3], OperacionRelacional.OR, t.lineno(2), t.lexpos(2))
+            t[0] = Logica(t[1], t[3], OperacionLogica.OR, t.lineno(2), t.lexpos(2))
         elif t[2] == "&&":
-            t[0] = Relacional(t[1], t[3], OperacionRelacional.AND, t.lineno(2), t.lexpos(2))
+            t[0] = Logica(t[1], t[3], OperacionLogica.AND, t.lineno(2), t.lexpos(2))
 
 
 def p_expValor(t):

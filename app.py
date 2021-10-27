@@ -64,12 +64,18 @@ if __name__ == '__main__':
 
 def compilar(entrada):
     genAux = Generador()
+    print(genAux.temps)
     genAux.limpiarTodo()
-    generator = genAux.getInstancia()
+    print(genAux.temps)
+    generador = genAux.getInstancia()
+    print(generador.temps)
 
     newEnv = Entorno(None)
     ast = parse(entrada)
     for instr in ast:
         instr.compilar(newEnv)
-
-    return generator.getCodigo()
+    codigo = generador.getCabeza()
+    codigo += "func main() {\n"
+    codigo += generador.getCodigo()
+    codigo += "}"
+    return codigo

@@ -22,4 +22,6 @@ class Return:
         self.tipo = returnTipo
         self.temp = Temp
         self.auxTipo = auxTipo
+        self.truel = ''
+        self.falsel = ''
 
