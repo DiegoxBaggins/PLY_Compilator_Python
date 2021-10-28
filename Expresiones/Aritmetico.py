@@ -59,5 +59,9 @@ class Aritmetico(Expresion):
             op = '*'
         elif self.tipo == OperacionAritmetica.DIV:
             op = '/'
+        elif self.tipo == OperacionAritmetica.MENOS:
+            op = "-"
+            generador.agregarExp(temp, '', valorDer.valor, op)
+            return Return(temp, Tipo.INT, True)
         generador.agregarExp(temp, valorIzq.valor, valorDer.valor, op)
         return Return(temp, Tipo.INT, True)

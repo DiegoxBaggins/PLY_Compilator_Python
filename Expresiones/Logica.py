@@ -28,7 +28,7 @@ class Logica(Expresion):
         lblAndOr = ''
 
         if self.tipo == OperacionLogica.AND:
-            lblAndOr = self.izq.trueLbl = generador.agregarLabel()
+            lblAndOr = self.izq.truel = generador.agregarLabel()
             self.der.truel = self.truel
             self.izq.falsel = self.der.falsel = self.falsel
         elif self.tipo == OperacionLogica.OR:
@@ -36,7 +36,18 @@ class Logica(Expresion):
             lblAndOr = self.izq.falsel = generador.agregarLabel()
             self.der.falsel = self.falsel
         else:
-            print("NOT")
+            self.izq.truel = self.falsel
+            self.izq.falsel = self.truel
+            izq = self.izq.compilar(entorno)
+            if izq.tipo != Tipo.BOOLEAN:
+                print("No se puede utilizar en expresion booleana")
+                return
+            generador.agregarCometario("FINALIZO EXPRESION LOGICA")
+            generador.agregarEspacio()
+            ret = Return(None, Tipo.BOOLEAN, False)
+            ret.truel = izq.truel
+            ret.falsel = izq.falsel
+            return ret
         izq = self.izq.compilar(entorno)
         if izq.tipo != Tipo.BOOLEAN:
             print("No se puede utilizar en expresion booleana")

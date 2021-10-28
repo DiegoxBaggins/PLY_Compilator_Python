@@ -97,7 +97,7 @@ class Relacional(Expresion):
         elif self.tipo == OperacionRelacional.MENORIGUAL:
             return '<='
         elif self.tipo == OperacionRelacional.MAYORIGUAL:
-            return '<='
+            return '>='
         elif self.tipo == OperacionRelacional.IGUALES:
             return '=='
         elif self.tipo == OperacionRelacional.DISTINTOS:

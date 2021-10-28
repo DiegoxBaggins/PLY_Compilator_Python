@@ -64,11 +64,9 @@ if __name__ == '__main__':
 
 def compilar(entrada):
     genAux = Generador()
-    print(genAux.temps)
     genAux.limpiarTodo()
-    print(genAux.temps)
     generador = genAux.getInstancia()
-    print(generador.temps)
+    # generador.limpiarTodo()
 
     newEnv = Entorno(None)
     ast = parse(entrada)

@@ -32,7 +32,7 @@ class Generador:
         self.temps = []
         # Lista de Nativas
         self.printString = False
-        Generador.generator = None
+        Generador.generador = None
 
     # CODIGO
     def getCodigo(self):
@@ -50,13 +50,14 @@ class Generador:
         return Generador.generador
 
     def getCabeza(self):
-        codigo = "package main \nimport (\n\t\"fmt\"\n)\n\nvar "
-        temporales = ""
-        print(self.temps)
-        for temp in self.temps:
-            temporales += temp + ", "
-        codigo += temporales[:len(temporales) - 2]
-        codigo += " float64;\n\n"
+        codigo = "package main \nimport (\n\t\"fmt\"\n)\n\n"
+        if len(self.temps) > 0:
+            codigo = "var "
+            temporales = ""
+            for temp in self.temps:
+                temporales += temp + ", "
+            codigo += temporales[:len(temporales) - 2]
+            codigo += " float64;\n\n"
         return codigo
 
     def agregarEspacio(self):
@@ -88,7 +89,7 @@ class Generador:
 
     # INSTRUCCIONES
     def agregarPrint(self, tipo, valor):
-        self.agregarCodigo(f'fmt.Printf("%{tipo}", int({valor}));\n')
+        self.agregarCodigo(f'fmt.Printf("%{tipo}", {valor});\n')
 
     # IF
     def agregarIf(self, left, right, op, label):

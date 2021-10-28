@@ -15,7 +15,6 @@ class Print(Expresion):
             valor = val.compilar(entorno)
             genAux = Generador()
             generador = genAux.getInstancia()
-
             if valor.tipo == Tipo.INT or valor.tipo == Tipo.FLOAT:
                 generador.agregarPrint("f", valor.valor)
             elif valor.tipo == Tipo.BOOLEAN:
