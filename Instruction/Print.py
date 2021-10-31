@@ -28,6 +28,21 @@ class Print(Expresion):
                 generador.printFalse()
 
                 generador.printLabel(labelSalir)
+            elif valor.tipo == Tipo.STRING:
+                generador.printStr()
+
+                paramTemp = generador.agregarTemp()
+
+                generador.agregarExp(paramTemp, "P", entorno.tamano, "+")
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, valor.valor)
+
+                generador.nuevoEnt(entorno.tamano)
+                generador.llamarFun('printString')
+
+                temp = generador.agregarTemp()
+                generador.getStack(temp, 'P')
+                generador.regresarEnt(entorno.tamano)
             else:
                 print("Incompleto")
 

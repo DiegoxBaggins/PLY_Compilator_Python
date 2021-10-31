@@ -72,8 +72,5 @@ def compilar(entrada):
     ast = parse(entrada)
     for instr in ast:
         instr.compilar(newEnv)
-    codigo = generador.getCabeza()
-    codigo += "func main() {\n"
-    codigo += generador.getCodigo()
-    codigo += "}"
+    codigo = generador.getCodigo()
     return codigo

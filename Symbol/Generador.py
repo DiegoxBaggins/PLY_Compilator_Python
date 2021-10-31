@@ -1,4 +1,5 @@
 from .Entorno import Entorno
+from Abstract.Return import *
 
 
 class Generador:
@@ -35,11 +36,17 @@ class Generador:
         Generador.generador = None
 
     # CODIGO
-    def getCodigo(self):
-        return f'{self.codigo}'
-
-    def agregarCodigo(self, codigo):
-        self.codigo = self.codigo + codigo
+    def agregarCodigo(self, codigo, tab="\t"):
+        if self.enNativa:
+            if self.nativas == '':
+                self.nativas = '/*-----NATIVES-----*/\n'
+            self.nativas += tab + codigo
+        elif self.enFunc:
+            if self.funcs == '':
+                self.funcs = '/*-----FUNCS-----*/\n'
+            self.funcs += tab + codigo
+        else:
+            self.codigo += '\t' + codigo
 
     def agregarCometario(self, comentario):
         self.agregarCodigo(f'/* {comentario} */\n')
@@ -52,12 +59,22 @@ class Generador:
     def getCabeza(self):
         codigo = "package main \nimport (\n\t\"fmt\"\n)\n\n"
         if len(self.temps) > 0:
-            codigo = "var "
+            codigo += "var "
             temporales = ""
             for temp in self.temps:
                 temporales += temp + ", "
             codigo += temporales[:len(temporales) - 2]
             codigo += " float64;\n\n"
+        codigo += "var P, H float64;\nvar stack [26102009]float64;\nvar heap [26102009]float64;\n\n"
+        return codigo
+
+    def getCodigo(self):
+        codigo = self. getCabeza()
+        codigo += self.nativas + "\n"
+        codigo += self.funcs + "\n"
+        codigo += "func main() {\n"
+        codigo += self.codigo + "\n"
+        codigo += "}"
         return codigo
 
     def agregarEspacio(self):
@@ -89,11 +106,52 @@ class Generador:
 
     # INSTRUCCIONES
     def agregarPrint(self, tipo, valor):
-        self.agregarCodigo(f'fmt.Printf("%{tipo}", {valor});\n')
+        if tipo != "f":
+            self.agregarCodigo(f'fmt.Printf("%{tipo}", int({valor}));\n')
+        else:
+            self.agregarCodigo(f'fmt.Printf("%{tipo}", {valor});\n')
 
     # IF
     def agregarIf(self, left, right, op, label):
         self.agregarCodigo(f'if {left} {op} {right} {{goto {label};}}\n')
+
+    # FUNCIONES
+    def abrirFun(self, id):
+        if not self.enNativa:
+            self.enFunc = True
+        self.agregarCodigo(f'func {id}(){{\n', '')
+
+    def cerrarFun(self):
+        self.agregarCodigo('return;\n}\n')
+        if not self.enNativa:
+            self.enFunc = False
+
+    # STACK
+    def setStack(self, pos, valor):
+        self.agregarCodigo(f'stack[int({pos})]={valor};\n')
+
+    def getStack(self, var, pos):
+        self.agregarCodigo(f'{var}=stack[int({pos})];\n')
+
+    # ENTORNOS
+    def nuevoEnt(self, tamano):
+        self.agregarCodigo(f'P=P+{tamano};\n')
+
+    def llamarFun(self, id):
+        self.agregarCodigo(f'{id}();\n')
+
+    def regresarEnt(self, tamano):
+        self.agregarCodigo(f'P=P-{tamano};\n')
+
+    # HEAP
+    def setHeap(self, pos, valor):
+        self.agregarCodigo(f'heap[int({pos})]={valor};\n')
+
+    def getHeap(self, var, pos):
+        self.agregarCodigo(f'{var}=heap[int({pos})];\n')
+
+    def nextHeap(self):
+        self.agregarCodigo('H=H+1;\n')
 
     #TRUE-FALSE
     def printTrue(self):
@@ -108,3 +166,45 @@ class Generador:
         self.agregarPrint("c", 108)
         self.agregarPrint("c", 115)
         self.agregarPrint("c", 101)
+
+    # NATIVAS
+    def printStr(self):
+        if self.printString:
+            return
+        self.printString = True
+        self.inNatives = True
+
+        self.abrirFun('printString')
+        # Label para salir de la funcion
+        final = self.agregarLabel()
+        # Label para la comparacion para buscar fin de cadena
+        comparar = self.agregarLabel()
+
+        # Temporal puntero a Stack
+        tempP = self.agregarTemp()
+
+        # Temporal puntero a Heap
+        tempH = self.agregarTemp()
+
+        self.agregarExp(tempP, 'P', '1', '+')
+
+        self.getStack(tempH, tempP)
+
+        # Temporal para comparar
+        tempC = self.agregarTemp()
+
+        self.printLabel(comparar)
+
+        self.getHeap(tempC, tempH)
+
+        self.agregarIf(tempC, '-1', '==', final)
+
+        self.agregarPrint('c', tempC)
+
+        self.agregarExp(tempH, tempH, '1', '+')
+
+        self.printGoto(comparar)
+
+        self.printLabel(final)
+        self.cerrarFun()
+        self.enNativa = False

@@ -11,11 +11,11 @@ class Literal(Expresion):
         self.tipo = tipo
 
     def compilar(self, env):
+        genAux = Generador()
+        generador = genAux.getInstancia()
         if self.tipo == Tipo.INT or self.tipo == Tipo.FLOAT:
             return Return(str(self.valor), self.tipo, False)
         elif self.tipo == Tipo.BOOLEAN:
-            genAux = Generador()
-            generador = genAux.getInstancia()
             if self.truel == '':
                 self.truel = generador.agregarLabel()
             if self.falsel == '':
@@ -34,5 +34,17 @@ class Literal(Expresion):
             ret.truel = self.truel
             ret.falsel = self.falsel
             return ret
+        elif self.tipo == Tipo.STRING:
+            retTemp = generador.agregarTemp()
+            generador.agregarExp(retTemp, 'H', '', '')
+
+            for char in str(self.valor):
+                generador.setHeap('H', ord(char))  # heap[H] = NUM;
+                generador.nextHeap()  # H = H + 1;
+
+            generador.setHeap('H', '-1')  # FIN DE CADENA
+            generador.nextHeap()
+
+            return Return(retTemp, Tipo.STRING, True)
         else:
             print('Incompleto')

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from Symbol.Simbolo import *
 
 
@@ -5,19 +7,23 @@ class Entorno:
 
     def __init__(self, prev):
         self.prev = prev
+        self.tamano = 0
+        if prev is not None:
+            self.tamano = self.prev.tamano
         self.variables = {}
         self.funciones = {}
         self.structs = {}
+        self.simbols = []
+        self.errors = []
 
-    def newVariable(self, idVar, valor, tipo):
-        env = self
-        nuevoSimbolo = Simbolo(valor, idVar, tipo)
-        while env.prev is not None:
-            if idVar in env.variables.keys():
-                env.variables[idVar] = nuevoSimbolo
-                return
-            env = env.prev
-        self.variables[idVar] = nuevoSimbolo
+    def guardarVar(self, idVar, tipo, enHeap):
+        if idVar in self.variables.keys():
+            print("Variable ya existe")
+        else:
+            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, self.prev is None, enHeap)
+            self.tamano += 1
+            self.variables[idVar] = nuevoSimbolo
+        return self.variables[idVar]
 
     def newVarStruct(self, idVar, obj):
         env = self
@@ -70,3 +76,27 @@ class Entorno:
             env = env.prev
         return env
 
+    def guardarTS(self, id, linea, columna, clas):
+        env = self.getGlobal()
+        simbol = TablaS(id, clas, 'entorno', linea, columna)
+        env.simbols.append(simbol)
+
+    def guardarError(self, descripcion, linea, columna):
+        now = datetime.now()
+        env = self.getGlobal()
+        num = len(env.errors) + 1
+        fecha = now.strftime("%d/%m/%Y %H:%M:%S")
+        error = Error(num, descripcion, linea, columna, fecha)
+        env.errors.append(error)
+
+
+def TablaS(id, tipo, ambito, linea, columna):
+    if isinstance(tipo, Enum):
+        tp = tipo.name
+    else:
+        tp = tipo
+    return [id, tp, ambito, linea, columna]
+
+
+def Error(num, descripcion, linea, columna, fecha):
+    return [num, descripcion, linea, columna, fecha]
