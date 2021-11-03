@@ -45,8 +45,8 @@ class Logica(Expresion):
             generador.agregarCometario("FINALIZO EXPRESION LOGICA")
             generador.agregarEspacio()
             ret = Return(None, Tipo.BOOLEAN, False)
-            ret.truel = izq.truel
-            ret.falsel = izq.falsel
+            ret.truel = self.truel
+            ret.falsel = self.falsel
             return ret
         izq = self.izq.compilar(entorno)
         if izq.tipo != Tipo.BOOLEAN:

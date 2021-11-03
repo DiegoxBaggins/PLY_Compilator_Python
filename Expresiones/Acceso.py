@@ -33,6 +33,7 @@ class Acceso(Expresion):
             generador.agregarCometario("Fin compilacion acceso")
             generador.agregarEspacio()
             return Return(temp, var.tipo, True)
+
         if self.truel == '':
             self.truel = generador.agregarLabel()
         if self.falsel == '':

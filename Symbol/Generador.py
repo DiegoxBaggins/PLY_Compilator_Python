@@ -19,6 +19,7 @@ class Generador:
         self.temps = []
         # Lista de Nativas
         self.printString = False
+        self.printBool = False
 
     def limpiarTodo(self):
         # Contadores
@@ -204,6 +205,42 @@ class Generador:
         self.agregarExp(tempH, tempH, '1', '+')
 
         self.printGoto(comparar)
+
+        self.printLabel(final)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def printBolean(self):
+        if self.printBool:
+            return
+        self.printBool = True
+        self.inNatives = True
+
+        self.abrirFun('printBool')
+        # Label para salir de la funcion
+        final = self.agregarLabel()
+
+        # Temporal puntero a Stack
+        tempP = self.agregarTemp()
+
+        valorBool = self.agregarTemp()
+
+        self.agregarExp(tempP, 'P', '1', '+')
+        self.getStack(valorBool, tempP)
+
+        truel = self.agregarLabel()
+        falsel = self.agregarLabel()
+
+        self.agregarIf(valorBool, '1', '==', truel)
+        self.printGoto(falsel)
+
+        self.printLabel(truel)
+        self.printTrue()
+
+        self.printGoto(final)
+
+        self.printLabel(falsel)
+        self.printFalse()
 
         self.printLabel(final)
         self.cerrarFun()

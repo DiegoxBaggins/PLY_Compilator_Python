@@ -18,16 +18,32 @@ class Print(Expresion):
             if valor.tipo == Tipo.INT or valor.tipo == Tipo.FLOAT:
                 generador.agregarPrint("f", valor.valor)
             elif valor.tipo == Tipo.BOOLEAN:
+                generador.printBolean()
                 labelSalir = generador.agregarLabel()
-                generador.printLabel(val.truel)
-                generador.printTrue()
+
+                paramValor = generador.agregarTemp()
+                paramTemp = generador.agregarTemp()
+
+                generador.printLabel(valor.truel)
+                generador.agregarExp(paramValor, "1", "", "")
 
                 generador.printGoto(labelSalir)
 
-                generador.printLabel(val.falsel)
-                generador.printFalse()
+                generador.printLabel(valor.falsel)
+                generador.agregarExp(paramValor, "0", "", "")
 
                 generador.printLabel(labelSalir)
+
+                generador.agregarExp(paramTemp, "P", entorno.tamano, "+")
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, paramValor)
+                generador.nuevoEnt(entorno.tamano)
+                generador.llamarFun('printBool')
+
+                temp = generador.agregarTemp()
+                generador.getStack(temp, 'P')
+                generador.regresarEnt(entorno.tamano)
+
             elif valor.tipo == Tipo.STRING:
                 generador.printStr()
 
