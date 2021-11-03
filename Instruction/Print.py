@@ -21,7 +21,7 @@ class Print(Expresion):
                 generador.printBolean()
                 labelSalir = generador.agregarLabel()
 
-                paramValor = generador.agregarTemp()
+                paramValor = generador.tmpBool
                 paramTemp = generador.agregarTemp()
 
                 generador.printLabel(valor.truel)

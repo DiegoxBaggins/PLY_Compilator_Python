@@ -8,8 +8,14 @@ class Entorno:
     def __init__(self, prev):
         self.prev = prev
         self.tamano = 0
+        self.lblBreak = ''
+        self.lblContinue = ''
+        self.lblReturn = ''
         if prev is not None:
             self.tamano = self.prev.tamano
+            self.lblBreak = self.prev.lblBreak
+            self.lblContinue = self.prev.lblContinue
+            self.lblReturn = self.prev.lblReturn
         self.variables = {}
         self.funciones = {}
         self.structs = {}

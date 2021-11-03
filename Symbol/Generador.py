@@ -20,6 +20,7 @@ class Generador:
         # Lista de Nativas
         self.printString = False
         self.printBool = False
+        self.tmpBool = self.agregarTemp()
 
     def limpiarTodo(self):
         # Contadores
@@ -35,6 +36,7 @@ class Generador:
         # Lista de Nativas
         self.printString = False
         Generador.generador = None
+        self.tmpBool = None
 
     # CODIGO
     def agregarCodigo(self, codigo, tab="\t"):
