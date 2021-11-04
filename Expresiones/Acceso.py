@@ -14,19 +14,22 @@ class Acceso(Expresion):
 
         generador.agregarCometario("Compilacion de Acceso")
 
-        var = entorno.getVar(self.id)
-        if var is None:
+        recibe = entorno.getVar(self.id)
+
+        if recibe is None:
             print("Error, no existe la variable")
             return
-
+        var = recibe[0]
+        tamano = recibe[1]
         # Temporal para guardar variable
         temp = generador.agregarTemp()
 
         # Obtencion de posicion de la variable
         tempPos = var.posicion
+        print(var.posicion + tamano)
         if not var.glb:
             tempPos = generador.agregarTemp()
-            generador.agregarExp(tempPos, 'P', var.posicion, "+")
+            generador.agregarExp(tempPos, 'P', var.posicion + tamano, "+")
         generador.getStack(temp, tempPos)
 
         if var.tipo != Tipo.BOOLEAN:

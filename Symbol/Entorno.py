@@ -33,34 +33,38 @@ class Entorno:
             glb.tamano += 1
             glb.variables[idVar] = nuevoSimbolo
         var = glb.variables[idVar]
-        return var
+        return [var, 0, var.posicion]
 
     def guardarVarLocal(self, idVar, tipo, enHeap, linea, columna):
         if idVar in self.variables.keys():
             print("Variable ya existe")
         else:
-            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, self.prev is None, enHeap)
+            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano - self.prev.tamano, self.prev is None, enHeap)
             self.guardarTS(idVar, linea, columna, tipo)
             self.tamano += 1
             self.variables[idVar] = nuevoSimbolo
-        return self.variables[idVar]
+        return [self.variables[idVar], self.prev.tamano, self.variables[idVar].posicion]
 
     def guardarVar(self, idVar, tipo, enHeap, linea, columna):
         entorno = self
         while True:
             if idVar in entorno.variables.keys():
                 print("Variable ya existe")
-                return entorno.variables[idVar]
+                if entorno.nombre == "GLOBAL":
+                    tamano = 0
+                else:
+                    tamano = entorno.prev.tamano
+                return [entorno.variables[idVar], tamano, entorno.variables[idVar].posicion]
             if entorno.nombre != "WHILE" and entorno.nombre != "FOR":
                 break
             else:
                 entorno = entorno.prev
 
-        nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, self.prev is None, enHeap)
+        nuevoSimbolo = Simbolo(idVar, tipo,  self.tamano - self.prev.tamano, self.prev is None, enHeap)
         self.guardarTS(idVar, linea, columna, tipo)
         self.tamano += 1
         self.variables[idVar] = nuevoSimbolo
-        return self.variables[idVar]
+        return [self.variables[idVar], self.prev.tamano, nuevoSimbolo.posicion]
 
     def newVarStruct(self, idVar, obj):
         env = self
@@ -87,7 +91,11 @@ class Entorno:
         env = self
         while env is not None:
             if idVar in env.variables.keys():
-                return env.variables[idVar]
+                if env.nombre == "GLOBAL":
+                    tamano = 0
+                else:
+                    tamano = env.prev.tamano
+                return [env.variables[idVar], tamano]
             env = env.prev
         return None
 

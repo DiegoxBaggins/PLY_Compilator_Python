@@ -63,6 +63,13 @@ class Declaracion(Expresion):
             newVar = entorno.guardarVar(self.id, valor.tipo, (valor.tipo == Tipo.STRING
                                                                 or valor.tipo == Tipo.STRUCT), self.linea, self.columna)
 
+        var = newVar[0]
+        tamano = newVar[1]
+        posicion = newVar[2]
+        if not var.glb:
+            posicion = generador.agregarTemp()
+            generador.agregarExp(posicion, 'P', tamano, "+")
+
         if valor.tipo == Tipo.BOOLEAN:
             tempLbl = generador.agregarLabel()
 
