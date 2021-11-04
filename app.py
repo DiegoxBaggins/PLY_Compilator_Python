@@ -68,7 +68,7 @@ def compilar(entrada):
     generador = genAux.getInstancia()
     # generador.limpiarTodo()
 
-    newEnv = Entorno(None)
+    newEnv = Entorno(None, "GLOBAL")
     ast = parse(entrada)
     for instr in ast:
         instr.compilar(newEnv)

@@ -19,37 +19,62 @@ class Declaracion(Expresion):
         self.valor = valor
         self.tipo = tipo
 
+    def chequearTipo(self, valor):
+        if self.tipo == Tipo.UNDEFINED:
+            return True
+        else:
+            if valor.tipo != self.tipo:
+                print(valor.tipo, self.tipo)
+                return False
+            else:
+                return True
+
     def compilar(self, entorno):
         genAux = Generador()
         generador = genAux.getInstancia()
 
         generador.agregarCometario("Compilacion de valor de variable")
         # Compilacion de valor que estamos asignando
-        valor = self.valor.compilar(entorno)
+        if self.valor is not None:
+            valor = self.valor.compilar(entorno)
+        else:
+            valor = Return(-1, Tipo.NULL, False)
 
         generador.agregarCometario("Fin de valor de variable")
+        if not self.chequearTipo(valor):
+            print("error de tipos")
+            return
 
-        # Guardado y obtencion de variable. Esta tiene la posicion, lo que nos sirve para asignarlo en el heap
-        newVar = entorno.guardarVar(self.id, valor.tipo, (valor.tipo == Tipo.STRING or valor.tipo == Tipo.STRUCT))
+        newVar = None
+        posicion = 0
+        if self.acceso == TipoAcceso.GLOBAL and self.valor is None:
+            entorno.moverGlobal(self.id)
+            return
+        elif self.acceso == TipoAcceso.GLOBAL:
+            newVar = entorno.guardarVarGlobal(self.id, valor.tipo, (valor.tipo == Tipo.STRING
+                                                                      or valor.tipo == Tipo.STRUCT), self.linea,
+                                                self.columna)
 
-        # Obtencion de posicion de la variable
-        tempPos = newVar.posicion
-        if not newVar.glb:
-            tempPos = generador.agregarTemp()
-            generador.agregarExp(tempPos, 'P', newVar.posicion, "+")
+        elif self.acceso == TipoAcceso.LOCAL:
+            newVar = entorno.guardarVarLocal(self.id, valor.tipo, (valor.tipo == Tipo.STRING
+                                                                     or valor.tipo == Tipo.STRUCT), self.linea,
+                                               self.columna)
+        else:
+            newVar = entorno.guardarVar(self.id, valor.tipo, (valor.tipo == Tipo.STRING
+                                                                or valor.tipo == Tipo.STRUCT), self.linea, self.columna)
 
         if valor.tipo == Tipo.BOOLEAN:
             tempLbl = generador.agregarLabel()
 
             generador.printLabel(valor.truel)
-            generador.setStack(tempPos, "1")
+            generador.setStack(posicion, "1")
 
             generador.printGoto(tempLbl)
 
             generador.printLabel(valor.falsel)
-            generador.setStack(tempPos, "0")
+            generador.setStack(posicion, "0")
 
             generador.printLabel(tempLbl)
         else:
-            generador.setStack(tempPos, valor.valor)
+            generador.setStack(posicion, valor.valor)
         generador.agregarEspacio()

@@ -5,30 +5,61 @@ from Symbol.Simbolo import *
 
 class Entorno:
 
-    def __init__(self, prev):
+    def __init__(self, prev, nombre):
         self.prev = prev
+        self.nombre = nombre
         self.tamano = 0
-        self.lblBreak = ''
-        self.lblContinue = ''
-        self.lblReturn = ''
+        self.breakl = ''
+        self.continuel = ''
+        self.returnl = ''
         if prev is not None:
             self.tamano = self.prev.tamano
-            self.lblBreak = self.prev.lblBreak
-            self.lblContinue = self.prev.lblContinue
-            self.lblReturn = self.prev.lblReturn
+            self.breakl = self.prev.breakl
+            self.continuel = self.prev.continuel
+            self.returnl = self.prev.returnl
         self.variables = {}
         self.funciones = {}
         self.structs = {}
         self.simbols = []
         self.errors = []
 
-    def guardarVar(self, idVar, tipo, enHeap):
+    def guardarVarGlobal(self, idVar, tipo, enHeap, linea, columna):
+        glb = self.getGlobal()
+        if idVar in glb.variables.keys():
+            print("variable ya existe")
+        else:
+            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, True, enHeap)
+            self.guardarTS(idVar, linea, columna, tipo)
+            glb.tamano += 1
+            glb.variables[idVar] = nuevoSimbolo
+        var = glb.variables[idVar]
+        return var
+
+    def guardarVarLocal(self, idVar, tipo, enHeap, linea, columna):
         if idVar in self.variables.keys():
             print("Variable ya existe")
         else:
             nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, self.prev is None, enHeap)
+            self.guardarTS(idVar, linea, columna, tipo)
             self.tamano += 1
             self.variables[idVar] = nuevoSimbolo
+        return self.variables[idVar]
+
+    def guardarVar(self, idVar, tipo, enHeap, linea, columna):
+        entorno = self
+        while True:
+            if idVar in entorno.variables.keys():
+                print("Variable ya existe")
+                return entorno.variables[idVar]
+            if entorno.nombre != "WHILE" and entorno.nombre != "FOR":
+                break
+            else:
+                entorno = entorno.prev
+
+        nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, self.prev is None, enHeap)
+        self.guardarTS(idVar, linea, columna, tipo)
+        self.tamano += 1
+        self.variables[idVar] = nuevoSimbolo
         return self.variables[idVar]
 
     def newVarStruct(self, idVar, obj):
@@ -60,6 +91,14 @@ class Entorno:
             env = env.prev
         return None
 
+    def moverGlobal(self, idVar):
+        glb = self.getGlobal()
+        var = glb.getVar(idVar)
+        if var is not None:
+            self.variables[idVar] = var
+        else:
+            print("variable global no existe: " + idVar)
+
     def getFunc(self, idFunc):
         env = self
         while env is not None:
@@ -84,7 +123,7 @@ class Entorno:
 
     def guardarTS(self, id, linea, columna, clas):
         env = self.getGlobal()
-        simbol = TablaS(id, clas, 'entorno', linea, columna)
+        simbol = TablaS(id, clas, self.nombre, linea, columna)
         env.simbols.append(simbol)
 
     def guardarError(self, descripcion, linea, columna):

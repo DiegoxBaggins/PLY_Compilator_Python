@@ -26,7 +26,7 @@ class Acceso(Expresion):
         tempPos = var.posicion
         if not var.glb:
             tempPos = generador.agregarTemp()
-            generador.addExp(tempPos, 'P', var.pos, "+")
+            generador.agregarExp(tempPos, 'P', var.posicion, "+")
         generador.getStack(temp, tempPos)
 
         if var.tipo != Tipo.BOOLEAN:

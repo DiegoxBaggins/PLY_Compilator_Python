@@ -1,6 +1,7 @@
 from Abstract.Expresion import *
 from Abstract.Return import *
 from Symbol.Entorno import *
+from Symbol.Generador import *
 
 
 class While(Expresion):
@@ -9,45 +10,23 @@ class While(Expresion):
         self.condicion = condicion
         self.instrucciones = instrucciones
 
-    def execute(self, entorno):
-        condicion = self.condicion.execute(entorno)
-        if condicion.tipo != Tipo.BOOLEAN:
-            print("La condicion no es bool")
-            entorno.guardarError("La condicion no es bool", self.linea, self.columna)
-            return
-        control = 0
-        nuevoEntorno = Entorno(entorno, "WHILE")
-        while condicion.valor is True and control < 250:
-            rtr = self.instrucciones.execute(nuevoEntorno)
-            condicion = self.condicion.execute(entorno)
-            control += 1
-            if rtr is not None:
-                if rtr.tipo == Tipo.BREAKINS:
-                    break
-                elif rtr.tipo == Tipo.CONTINUEINS:
-                    continue
-                else:
-                    return rtr
-        if control == 250:
-            print("Error en sentencia While, stack overflow")
-            entorno.guardarError("Error en sentencia While, stack overflow", self.linea, self.columna)
+    def compilar(self, entorno):
+        genAux = Generador()
+        generador = genAux.getInstancia()
 
-    def graph(self, grafo, graph):
-        grafo.node(str(graph.indice), "WHILE")
-        grafo.edge(str(graph.pivote1), str(graph.indice))
-        graph.pivote1 = graph.indice
-        graph.indice += 1
-        grafo.node(str(graph.indice), "Condición")
-        grafo.edge(str(graph.pivote1), str(graph.indice))
-        aux = graph.pivote1
-        graph.pivote1 = graph.indice
-        graph.indice += 1
-        self.condicion.graph(grafo, graph)
-        graph.indice += 1
-        graph.pivote1 = aux
-        grafo.node(str(graph.indice), "INSTRUCCIONES")
-        grafo.edge(str(aux), str(graph.indice))
-        graph.pivote1 = graph.indice
-        graph.indice += 1
-        self.instrucciones.graph(grafo, graph)
-        graph.pivote1 = aux
+        continuel = generador.agregarLabel()
+        generador.printLabel(continuel)
+
+        condicion = self.condicion.compilar(entorno)
+        newEnv = Entorno(entorno, "WHILE")
+
+        newEnv.breakl = condicion.falsel
+        newEnv.continuel = continuel
+
+        generador.printLabel(condicion.truel)
+
+        self.instrucciones.compilar(newEnv)
+        generador.printGoto(continuel)
+
+        generador.printLabel(condicion.falsel)
+
