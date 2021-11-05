@@ -28,13 +28,13 @@ class Funcion(Expresion):
             for param in self.params:
                 newEnv.guardarVarLocal(param.id, param.tipo, (param.tipo == Tipo.STRING or param.tipo == Tipo.STRUCT),
                                        self.linea, self.columna)
-
+            generador.enFunc = True
             generador.abrirFun(self.id)
-
             self.instrucciones.compilar(newEnv)
-
-            generador.printLabel(returnl)
+            if self.tipo is not None:
+                generador.printLabel(returnl)
             generador.cerrarFun()
+            generador.enFunc = False
         else:
             print("Funcion " + self.id + "repetida")
             entorno.guardarError("Funcion " + self.id + "repetida", self.linea, self.columna)

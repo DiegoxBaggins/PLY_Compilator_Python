@@ -62,5 +62,5 @@ class Print(Expresion):
             else:
                 print("Incompleto")
 
-            if self.salto:
-                generador.agregarPrint("c", 10)
+        if self.salto:
+            generador.agregarPrint("c", 10)

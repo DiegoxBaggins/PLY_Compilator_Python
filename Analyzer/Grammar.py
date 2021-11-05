@@ -198,15 +198,15 @@ def p_declaracionglb(t):
 
 # -------------------------------------------------Declaracion func
 def p_funcionINS(t):
-    '''funcionINS : FUNCTION ID PARIZQ PARDER DOSPUNTOS DOSPUNTOS tipos sentencia END
-                  | FUNCTION ID PARIZQ params PARDER DOSPUNTOS DOSPUNTOS tipos sentencia END
-                  | FUNCTION ID PARIZQ PARDER sentencia END
-                  | FUNCTION ID PARIZQ params PARDER sentencia END'''
+    '''funcionINS : FUNCTION ID PARIZQ PARDER sentencia END
+                  | FUNCTION ID PARIZQ params PARDER sentencia END
+                  | FUNCTION ID PARIZQ PARDER DOSPUNTOS DOSPUNTOS tipos sentencia END
+                  | FUNCTION ID PARIZQ params PARDER DOSPUNTOS DOSPUNTOS tipos sentencia END'''
     if len(t) == 7:
         t[0] = Funcion(t[2], [], t[5], None, t.lineno(1), t.lexpos(0))
-    if len(t) == 8:
+    elif len(t) == 8:
         t[0] = Funcion(t[2], t[4], t[6], None, t.lineno(1), t.lexpos(0))
-    if len(t) == 10:
+    elif len(t) == 10:
         t[0] = Funcion(t[2], [], t[8], t[7], t.lineno(1), t.lexpos(0))
     else:
         t[0] = Funcion(t[2], t[4], t[9], t[8], t.lineno(1), t.lexpos(0))

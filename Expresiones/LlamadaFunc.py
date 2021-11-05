@@ -19,9 +19,9 @@ class LlamadaFunc(Expresion):
             genAux = Generador()
             generador = genAux.getInstancia()
             glb = entorno.getGlobal()
+            tamano = entorno.tamano
             glbtam = glb.tamano
             glb.tamano = 0
-            tamano = entorno.tamano
             for param in self.params:
                 valoresParams.append(param.compilar(entorno))
             temp = generador.agregarTemp()
@@ -42,7 +42,7 @@ class LlamadaFunc(Expresion):
             # Verificar tipo de la funcion. Boolean es distinto
             glb.tamano = glbtam
             if func.tipo is None:
-                return Return(-1, Tipo.NULL, False)
+                return
             if func.tipo == Tipo.BOOLEAN:
                 if self.truel == '' and self.falsel == '':
                     self.truel = generador.agregarLabel()

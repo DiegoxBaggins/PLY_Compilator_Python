@@ -127,14 +127,10 @@ class Generador:
 
     # FUNCIONES
     def abrirFun(self, id):
-        if not self.enNativa:
-            self.enFunc = True
         self.agregarCodigo(f'func {id}(){{\n', '')
 
     def cerrarFun(self):
         self.agregarCodigo('return;\n}\n')
-        if not self.enNativa:
-            self.enFunc = False
 
     # STACK
     def setStack(self, pos, valor):
@@ -182,7 +178,7 @@ class Generador:
         if self.printString:
             return
         self.printString = True
-        self.inNatives = True
+        self.enNativa = True
 
         self.abrirFun('printString')
         # Label para salir de la funcion
@@ -223,7 +219,7 @@ class Generador:
         if self.printBool:
             return
         self.printBool = True
-        self.inNatives = True
+        self.enNativa = True
 
         self.abrirFun('printBool')
         # Label para salir de la funcion
@@ -259,7 +255,7 @@ class Generador:
         if self.printPotencia:
             return
         self.printPotencia = True
-        self.inNatives = True
+        self.enNativa = True
 
         self.abrirFun('doPotencia')
         # Label para salir de la funcion

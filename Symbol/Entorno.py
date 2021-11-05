@@ -102,8 +102,8 @@ class Entorno:
     def moverGlobal(self, idVar):
         glb = self.getGlobal()
         var = glb.getVar(idVar)
-        if var is not None:
-            self.variables[idVar] = var
+        if var[0] is not None:
+            self.variables[idVar] = var[0]
         else:
             print("variable global no existe: " + idVar)
 
