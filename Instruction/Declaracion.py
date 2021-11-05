@@ -46,7 +46,6 @@ class Declaracion(Expresion):
             return
 
         newVar = None
-        posicion = 0
         if self.acceso == TipoAcceso.GLOBAL and self.valor is None:
             entorno.moverGlobal(self.id)
             return
@@ -67,6 +66,7 @@ class Declaracion(Expresion):
         tamano = newVar[1]
         posicion = newVar[2]
         if not var.glb:
+            tamano += posicion
             posicion = generador.agregarTemp()
             generador.agregarExp(posicion, 'P', tamano, "+")
 

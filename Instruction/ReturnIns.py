@@ -1,5 +1,6 @@
 from Abstract.Expresion import *
 from Abstract.Return import *
+from Symbol.Generador import *
 
 
 class ReturnIns(Expresion):
@@ -7,20 +8,24 @@ class ReturnIns(Expresion):
         Expresion.__init__(self, linea, columna)
         self.exp = exp
 
-    def execute(self, entorno):
+    def compilar(self, entorno):
+        if entorno.returnl == '':
+            print("Return fuera de funcion")
+            return
+        genAux = Generador()
+        generator = genAux.getInstancia()
         if self.exp is not None:
-            valor = self.exp.execute(entorno)
-            return valor
-        else:
-            return Return(None, Tipo.RETURNINS, "")
+            valor = self.exp.compilar(entorno)
+            if valor.tipo != Tipo.BOOLEAN:
+                generator.setStack('P', valor.valor)
+            else:
+                tempLbl = generator.agregarLabel()
 
-    def graph(self, grafo, graph):
-        if self.exp is not None:
-            grafo.node(str(graph.indice), "RETURN")
-            grafo.edge(str(graph.pivote1), str(graph.indice))
-            graph.pivote1 = graph.indice
-            graph.indice += 1
-            self.exp.graph(grafo, graph)
-        else:
-            grafo.node(str(graph.indice), "RETURN")
-            grafo.edge(str(graph.pivote1), str(graph.indice))
+                generator.printLabel(valor.truel)
+                generator.setStack('P', '1')
+                generator.printGoto(tempLbl)
+
+                generator.printLabel(valor.falsel)
+                generator.setStack('P', '0')
+                generator.printLabel(tempLbl)
+        generator.printGoto(entorno.returnl)

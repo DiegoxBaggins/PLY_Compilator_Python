@@ -198,12 +198,18 @@ def p_declaracionglb(t):
 
 # -------------------------------------------------Declaracion func
 def p_funcionINS(t):
-    '''funcionINS : FUNCTION ID PARIZQ PARDER sentencia END
+    '''funcionINS : FUNCTION ID PARIZQ PARDER DOSPUNTOS DOSPUNTOS tipos sentencia END
+                  | FUNCTION ID PARIZQ params PARDER DOSPUNTOS DOSPUNTOS tipos sentencia END
+                  | FUNCTION ID PARIZQ PARDER sentencia END
                   | FUNCTION ID PARIZQ params PARDER sentencia END'''
     if len(t) == 7:
-        t[0] = Function(t[2], [], t[5], t.lineno(1), t.lexpos(0))
+        t[0] = Funcion(t[2], [], t[5], None, t.lineno(1), t.lexpos(0))
+    if len(t) == 8:
+        t[0] = Funcion(t[2], t[4], t[6], None, t.lineno(1), t.lexpos(0))
+    if len(t) == 10:
+        t[0] = Funcion(t[2], [], t[8], t[7], t.lineno(1), t.lexpos(0))
     else:
-        t[0] = Function(t[2], t[4], t[6], t.lineno(1), t.lexpos(0))
+        t[0] = Funcion(t[2], t[4], t[9], t[8], t.lineno(1), t.lexpos(0))
 
 
 def p_decParams(t):
@@ -211,10 +217,15 @@ def p_decParams(t):
               | params COMA ID DOSPUNTOS DOSPUNTOS tipos
               | ID
               | ID DOSPUNTOS DOSPUNTOS tipos'''
-    if len(t) == 2 or len(t) == 5:
-        t[0] = [Parametro(t[1], t.lineno(1), t.lexpos(1))]
+    if len(t) == 2:
+        t[0] = [Parametro(t[1], Tipo.UNDEFINED, t.lineno(1), t.lexpos(1))]
+    elif len(t) == 5:
+        t[0] = [Parametro(t[1], t[4], t.lineno(1), t.lexpos(1))]
+    elif len(t) == 4:
+        t[1].append(Parametro(t[1], Tipo.UNDEFINED, t.lineno(1), t.lexpos(1)))
+        t[0] = t[1]
     else:
-        t[1].append(Parametro(t[3], t.lineno(3), t.lexpos(3)))
+        t[1].append(Parametro(t[3], t[6], t.lineno(1), t.lexpos(1)))
         t[0] = t[1]
 
 
