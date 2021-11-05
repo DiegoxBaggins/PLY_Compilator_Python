@@ -10,10 +10,8 @@ class OperacionAritmetica(Enum):
     MULTI = 2
     DIV = 3
     MENOS = 4
-    MULTSTR = 5
     POTENCIA = 6
     MODULO = 7
-    CONCAT = 8
 
 
 def casteos(izq, der):
@@ -43,11 +41,11 @@ class Aritmetico(Expresion):
         self.der = der
         self.tipo = tipo
 
-    def compilar(self, env):
+    def compilar(self, entorno):
         genAux = Generador()
         generador = genAux.getInstancia()
-        valorIzq = self.izq.compilar(env)
-        valorDer = self.der.compilar(env)
+        valorIzq = self.izq.compilar(entorno)
+        valorDer = self.der.compilar(entorno)
 
         temp = generador.agregarTemp()
         op = ''
@@ -62,6 +60,26 @@ class Aritmetico(Expresion):
         elif self.tipo == OperacionAritmetica.MENOS:
             op = "-"
             generador.agregarExp(temp, '', valorDer.valor, op)
+            return Return(temp, Tipo.INT, True)
+        elif self.tipo == OperacionAritmetica.MODULO:
+            generador.agregarMod(temp, valorIzq.valor, valorDer.valor)
+            return Return(temp, Tipo.INT, True)
+        elif self.tipo == OperacionAritmetica.POTENCIA:
+            generador.potencia()
+
+            paramTemp = generador.agregarTemp()
+
+            generador.agregarExp(paramTemp, "P", entorno.tamano, "+")
+            generador.agregarExp(paramTemp, paramTemp, "1", "+")
+            generador.setStack(paramTemp, valorIzq.valor)
+            generador.agregarExp(paramTemp, paramTemp, "1", "+")
+            generador.setStack(paramTemp, valorDer.valor)
+
+            generador.nuevoEnt(entorno.tamano)
+            generador.llamarFun("doPotencia")
+
+            generador.getStack(temp, 'P')
+            generador.regresarEnt(entorno.tamano)
             return Return(temp, Tipo.INT, True)
         generador.agregarExp(temp, valorIzq.valor, valorDer.valor, op)
         return Return(temp, Tipo.INT, True)

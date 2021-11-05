@@ -13,6 +13,7 @@ class Generador:
         self.codigo = ''
         self.funcs = ''
         self.nativas = ''
+        self.imports = '\t"fmt"\n'
         self.enFunc = False
         self.enNativa = False
         # Lista de Temporales
@@ -21,6 +22,8 @@ class Generador:
         self.printString = False
         self.printBool = False
         self.tmpBool = self.agregarTemp()
+        self.printPotencia = False
+        self.mod = False
 
     def limpiarTodo(self):
         # Contadores
@@ -29,14 +32,18 @@ class Generador:
         self.codigo = ''
         self.funcs = ''
         self.nativas = ''
+        self.imports = '\t"fmt"\n'
         self.enFunc = False
         self.enNativa = False
         # Lista de Temporales
         self.temps = []
         # Lista de Nativas
-        self.printString = False
         Generador.generador = None
+        self.printString = False
+        self.printBool = False
         self.tmpBool = None
+        self.printPotencia = False
+        self.mod = False
 
     # CODIGO
     def agregarCodigo(self, codigo, tab="\t"):
@@ -60,7 +67,7 @@ class Generador:
         return Generador.generador
 
     def getCabeza(self):
-        codigo = "package main \nimport (\n\t\"fmt\"\n)\n\n"
+        codigo = f"package main \nimport (\n{self.imports})\n\n"
         if len(self.temps) > 0:
             codigo += "var "
             temporales = ""
@@ -247,3 +254,56 @@ class Generador:
         self.printLabel(final)
         self.cerrarFun()
         self.enNativa = False
+
+    def potencia(self):
+        if self.printPotencia:
+            return
+        self.printPotencia = True
+        self.inNatives = True
+
+        self.abrirFun('doPotencia')
+        # Label para salir de la funcion
+        final = self.agregarLabel()
+        comparar = self.agregarLabel()
+        cerrar = self.agregarLabel()
+
+        apuntador = self.agregarTemp()
+        # Temporal puntero a base
+        tempBase = self.agregarTemp()
+        # Temporal puntero a exponente
+        tempExp = self.agregarTemp()
+        # Temporal puntero a auxiliar
+        tempAux = self.agregarTemp()
+
+        self.agregarExp(apuntador, 'P', '1', '+')
+        self.getStack(tempBase, apuntador)
+
+        self.agregarExp(apuntador, apuntador, '1', '+')
+        self.getStack(tempExp, apuntador)
+
+        self.agregarExp(tempAux, tempBase, '', '')
+
+        self.agregarIf(tempExp, '1', '==', cerrar)
+
+        self.printLabel(comparar)
+        self.agregarIf(tempExp, '1', '<=', final)
+
+        self.agregarExp(tempBase, tempBase, tempAux, "*")
+        self.agregarExp(tempExp, tempExp, '1', '-')
+
+        self.printGoto(comparar)
+
+        self.printLabel(cerrar)
+        self.agregarExp(tempBase, '1', '', '')
+
+        self.printLabel(final)
+        self.agregarExp(apuntador, apuntador, '2', '-')
+        self.setStack(apuntador, tempBase)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def agregarMod(self, resultado, izq, der):
+        if not self.mod:
+            self.mod = True
+            self.imports += '\t"math"\n'
+        self.agregarCodigo(f'{resultado}=math.Mod({izq},{der});\n')
