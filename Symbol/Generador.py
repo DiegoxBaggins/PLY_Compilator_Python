@@ -27,6 +27,8 @@ class Generador:
         self.concatenar = False
         self.multStr = False
         self.compStr = False
+        self.funcUpper = False
+        self.funcLower = False
 
     def limpiarTodo(self):
         # Contadores
@@ -50,6 +52,8 @@ class Generador:
         self.concatenar = False
         self.multStr = False
         self.compStr = False
+        self.funcUpper = False
+        self.funcLower = False
 
     # CODIGO
     def agregarCodigo(self, codigo, tab="\t"):
@@ -444,5 +448,83 @@ class Generador:
         self.printLabel(falso)
         self.setStack('P', '0')
         self.printLabel(salir)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def upper(self):
+        if self.funcUpper:
+            return
+        self.funcUpper = True
+        self.enNativa = True
+
+        self.abrirFun('upper')
+        # apuntador
+        apuntador = self.agregarTemp()
+        # apuntador de los strings
+        string = self.agregarTemp()
+        nuevo = self.agregarTemp()
+        # labels loops
+        loop = self.agregarLabel()
+        salir = self.agregarLabel()
+        falso = self.agregarLabel()
+        # obtener valores
+        self.agregarExp(apuntador, 'P', '1', '+')
+        self.getStack(string, apuntador)
+        self.agregarExp(nuevo, 'H', '', '')
+        # recorrer string
+        self.printLabel(loop)
+        self.getHeap(apuntador, string)
+        self.agregarIf(apuntador, '-1', '==', salir)
+        self.agregarIf(apuntador, '97', '<', falso)
+        self.agregarIf(apuntador, '122', '>', falso)
+        self.agregarExp(apuntador, apuntador, '32', '-')
+        self.printLabel(falso)
+        self.setHeap('H', apuntador)
+        self.nextHeap()
+        self.agregarExp(string, string, '1', '+')
+        self.printGoto(loop)
+        self.printLabel(salir)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', nuevo)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def lower(self):
+        if self.funcLower:
+            return
+        self.funcLower = True
+        self.enNativa = True
+
+        self.abrirFun('lower')
+        # apuntador
+        apuntador = self.agregarTemp()
+        # apuntador de los strings
+        string = self.agregarTemp()
+        nuevo = self.agregarTemp()
+        # labels loops
+        loop = self.agregarLabel()
+        salir = self.agregarLabel()
+        falso = self.agregarLabel()
+        # obtener valores
+        self.agregarExp(apuntador, 'P', '1', '+')
+        self.getStack(string, apuntador)
+        self.agregarExp(nuevo, 'H', '', '')
+        # recorrer string
+        self.printLabel(loop)
+        self.getHeap(apuntador, string)
+        self.agregarIf(apuntador, '-1', '==', salir)
+        self.agregarIf(apuntador, '65', '<', falso)
+        self.agregarIf(apuntador, '90', '>', falso)
+        self.agregarExp(apuntador, apuntador, '32', '+')
+        self.printLabel(falso)
+        self.setHeap('H', apuntador)
+        self.nextHeap()
+        self.agregarExp(string, string, '1', '+')
+        self.printGoto(loop)
+        self.printLabel(salir)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', nuevo)
         self.cerrarFun()
         self.enNativa = False
