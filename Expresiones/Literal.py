@@ -46,5 +46,7 @@ class Literal(Expresion):
             generador.nextHeap()
 
             return Return(retTemp, Tipo.STRING, True)
+        elif self.tipo == Tipo.CHAR:
+            return Return(self.valor, self.tipo, False)
         else:
             print('Incompleto')

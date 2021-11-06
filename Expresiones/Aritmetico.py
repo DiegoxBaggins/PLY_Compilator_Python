@@ -67,3 +67,45 @@ class Aritmetico(Expresion):
                 generador.getStack(temp, 'P')
                 generador.regresarEnt(entorno.tamano)
             return Return(temp, Tipo.INT, True)
+        if valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.STRING:
+            if self.tipo == OperacionAritmetica.MULTI:
+                print("concatenacion")
+                generador.concatenarStr()
+
+                paramTemp = generador.agregarTemp()
+
+                generador.agregarExp(paramTemp, "P", entorno.tamano, "+")
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, valorIzq.valor)
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, valorDer.valor)
+
+                generador.nuevoEnt(entorno.tamano)
+                generador.llamarFun("concatenar")
+
+                generador.getStack(temp, 'P')
+                generador.regresarEnt(entorno.tamano)
+                return Return(temp, Tipo.STRING, True)
+            else:
+                print("error")
+        if valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.INT:
+            if self.tipo == OperacionAritmetica.POTENCIA:
+                print("concatenacion")
+                generador.multiplicarStr()
+
+                paramTemp = generador.agregarTemp()
+
+                generador.agregarExp(paramTemp, "P", entorno.tamano, "+")
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, valorIzq.valor)
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, valorDer.valor)
+
+                generador.nuevoEnt(entorno.tamano)
+                generador.llamarFun("multStr")
+
+                generador.getStack(temp, 'P')
+                generador.regresarEnt(entorno.tamano)
+                return Return(temp, Tipo.STRING, True)
+            else:
+                print("error")

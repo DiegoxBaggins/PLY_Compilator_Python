@@ -24,6 +24,9 @@ class Generador:
         self.tmpBool = self.agregarTemp()
         self.printPotencia = False
         self.mod = False
+        self.concatenar = False
+        self.multStr = False
+        self.compStr = False
 
     def limpiarTodo(self):
         # Contadores
@@ -44,6 +47,9 @@ class Generador:
         self.tmpBool = None
         self.printPotencia = False
         self.mod = False
+        self.concatenar = False
+        self.multStr = False
+        self.compStr = False
 
     # CODIGO
     def agregarCodigo(self, codigo, tab="\t"):
@@ -303,3 +309,140 @@ class Generador:
             self.mod = True
             self.imports += '\t"math"\n'
         self.agregarCodigo(f'{resultado}=math.Mod({izq},{der});\n')
+
+    def concatenarStr(self):
+        if self.concatenar:
+            return
+        self.concatenar = True
+        self.enNativa = True
+
+        self.abrirFun('concatenar')
+        # aputandor
+        apuntador = self.agregarTemp()
+        # apuntador de los strings
+        str1 = self.agregarTemp()
+        str2 = self.agregarTemp()
+        nuevoStr = self.agregarTemp()
+        # labels loops
+        loop1 = self.agregarLabel()
+        salir1 = self.agregarLabel()
+        loop2 = self.agregarLabel()
+        salir2 = self.agregarLabel()
+        # obtener valores
+        self.agregarExp(apuntador, 'P', '1', '+')
+        self.getStack(str1, apuntador)
+        self.agregarExp(apuntador, apuntador, '1', '+')
+        self.getStack(str2, apuntador)
+        self.agregarExp(nuevoStr, 'H', '', '')
+        # recorrer primer string
+        self.printLabel(loop1)
+        self.getHeap(apuntador, str1)
+        self.agregarIf(apuntador, '-1', '==', salir1)
+        self.setHeap('H', apuntador)
+        self.nextHeap()
+        self.agregarExp(str1, str1, '1', '+')
+        self.printGoto(loop1)
+        self.printLabel(salir1)
+        # recorrer segundo string
+        self.printLabel(loop2)
+        self.getHeap(apuntador, str2)
+        self.agregarIf(apuntador, '-1', '==', salir2)
+        self.setHeap('H', apuntador)
+        self.nextHeap()
+        self.agregarExp(str2, str2, '1', '+')
+        self.printGoto(loop2)
+        self.printLabel(salir2)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', nuevoStr)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def multiplicarStr(self):
+        if self.multStr:
+            return
+        self.multStr = True
+        self.enNativa = True
+
+        self.abrirFun('multStr')
+        # aputandor
+        apuntador = self.agregarTemp()
+        # apuntador de los strings
+        string = self.agregarTemp()
+        auxiliar = self.agregarTemp()
+        veces = self.agregarTemp()
+        nuevoStr = self.agregarTemp()
+        # labels loops
+        loop1 = self.agregarLabel()
+        salir1 = self.agregarLabel()
+        loop2 = self.agregarLabel()
+        salir2 = self.agregarLabel()
+        # obtener valores
+        self.agregarExp(apuntador, 'P', '1', '+')
+        self.getStack(string, apuntador)
+        self.agregarExp(auxiliar, string, '', '')
+        self.agregarExp(apuntador, apuntador, '1', '+')
+        self.getStack(veces, apuntador)
+        self.agregarExp(nuevoStr, 'H', '', '')
+        # recorrer primer loop de veces
+        self.printLabel(loop1)
+        self.agregarIf(veces, '0', '==', salir1)
+        self.agregarExp(string, auxiliar, '', '')
+        # recorrer string
+        self.printLabel(loop2)
+        self.getHeap(apuntador, string)
+        self.agregarIf(apuntador, '-1', '==', salir2)
+        self.setHeap('H', apuntador)
+        self.nextHeap()
+        self.agregarExp(string, string, '1', '+')
+        self.printGoto(loop2)
+        self.printLabel(salir2)
+        self.agregarExp(veces, veces, '1', '-')
+        self.printGoto(loop1)
+        self.printLabel(salir1)
+        self.setHeap('H', '-1')
+        self.nextHeap()
+        self.setStack('P', nuevoStr)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def compararStr(self):
+        if self.compStr:
+            return
+        self.compStr = True
+        self.enNativa = True
+
+        self.abrirFun('cmpStr')
+        # aputandor
+        apuntador1 = self.agregarTemp()
+        apuntador2 = self.agregarTemp()
+        # apuntador de los strings
+        str1 = self.agregarTemp()
+        str2 = self.agregarTemp()
+        # labels loops
+        loop = self.agregarLabel()
+        salir = self.agregarLabel()
+        verdadero = self.agregarLabel()
+        falso = self.agregarLabel()
+        # obtener valores
+        self.agregarExp(apuntador1, 'P', '1', '+')
+        self.getStack(str1, apuntador1)
+        self.agregarExp(apuntador2, apuntador1, '1', '+')
+        self.getStack(str2, apuntador2)
+        # recorrer strings
+        self.printLabel(loop)
+        self.getHeap(apuntador1, str1)
+        self.getHeap(apuntador2, str2)
+        self.agregarIf(apuntador1, apuntador2, '!=', falso)
+        self.agregarIf(apuntador1, '-1', '==', verdadero)
+        self.agregarExp(str1, str1, '1', '+')
+        self.agregarExp(str2, str2, '1', '+')
+        self.printGoto(loop)
+        self.printLabel(verdadero)
+        self.setStack('P', '1')
+        self.printGoto(salir)
+        self.printLabel(falso)
+        self.setStack('P', '0')
+        self.printLabel(salir)
+        self.cerrarFun()
+        self.enNativa = False

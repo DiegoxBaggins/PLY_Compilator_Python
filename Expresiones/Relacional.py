@@ -39,7 +39,31 @@ class Relacional(Expresion):
                 generador.agregarIf(izq.valor, der.valor, self.getOp(), self.truel)
                 generador.printGoto(self.falsel)  # ELSE
             elif izq.tipo == Tipo.STRING and der.tipo == Tipo.STRING:
-                print("Comparacion de cadenas")  # Únicamente se puede con igualdad o desigualdad
+                self.checkLabels()
+                temp = generador.agregarTemp()
+                generador.compararStr()
+
+                paramTemp = generador.agregarTemp()
+
+                generador.agregarExp(paramTemp, "P", entorno.tamano, "+")
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, izq.valor)
+                generador.agregarExp(paramTemp, paramTemp, "1", "+")
+                generador.setStack(paramTemp, der.valor)
+
+                generador.nuevoEnt(entorno.tamano)
+                generador.llamarFun("cmpStr")
+
+                generador.getStack(temp, 'P')
+                generador.regresarEnt(entorno.tamano)
+
+                if self.tipo == OperacionRelacional.IGUALES:
+                    generador.agregarIf(temp, '1', '==', self.truel)
+                    generador.printGoto(self.falsel)
+                if self.tipo == OperacionRelacional.DISTINTOS:
+                    generador.agregarIf(temp, '1', '==', self.falsel)
+                    generador.printGoto(self.truel)
+
         else:
             irDerecha = generador.agregarLabel()
             izqTemp = generador.agregarTemp()
