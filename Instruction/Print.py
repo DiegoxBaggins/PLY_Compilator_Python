@@ -11,10 +11,10 @@ class Print(Expresion):
         self.salto = salto
 
     def compilar(self, entorno):
+        genAux = Generador()
+        generador = genAux.getInstancia()
         for val in self.valor:
             valor = val.compilar(entorno)
-            genAux = Generador()
-            generador = genAux.getInstancia()
             if valor.tipo == Tipo.INT or valor.tipo == Tipo.FLOAT:
                 generador.agregarPrint("f", valor.valor)
             elif valor.tipo == Tipo.BOOLEAN:
@@ -59,6 +59,8 @@ class Print(Expresion):
                 temp = generador.agregarTemp()
                 generador.getStack(temp, 'P')
                 generador.regresarEnt(entorno.tamano)
+            elif valor.tipo == Tipo.CHAR:
+                generador.agregarPrint("c", valor.valor)
             else:
                 print("Incompleto")
 
