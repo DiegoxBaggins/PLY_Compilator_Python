@@ -29,6 +29,7 @@ class Generador:
         self.compStr = False
         self.funcUpper = False
         self.funcLower = False
+        self.mathError = False
 
     def limpiarTodo(self):
         # Contadores
@@ -54,6 +55,7 @@ class Generador:
         self.compStr = False
         self.funcUpper = False
         self.funcLower = False
+        self.mathError = False
 
     # CODIGO
     def agregarCodigo(self, codigo, tab="\t"):
@@ -526,5 +528,25 @@ class Generador:
         self.setHeap('H', '-1')
         self.nextHeap()
         self.setStack('P', nuevo)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def printMathError(self):
+        if self.mathError:
+            return
+        self.mathError = True
+        self.enNativa = True
+        self.abrirFun('mathError')
+        self.agregarPrint("c", 77)
+        self.agregarPrint("c", 65)
+        self.agregarPrint("c", 84)
+        self.agregarPrint("c", 72)
+        self.agregarPrint("c", 32)
+        self.agregarPrint("c", 69)
+        self.agregarPrint("c", 82)
+        self.agregarPrint("c", 82)
+        self.agregarPrint("c", 79)
+        self.agregarPrint("c", 82)
+        self.agregarPrint("c", 10)
         self.cerrarFun()
         self.enNativa = False

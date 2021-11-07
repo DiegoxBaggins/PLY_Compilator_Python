@@ -44,12 +44,34 @@ class Aritmetico(Expresion):
                 generador.agregarExp(temp, valorIzq.valor, valorDer.valor, op)
             elif self.tipo == OperacionAritmetica.DIV:
                 op = '/'
-                generador.agregarExp(temp, valorIzq.valor, valorDer.valor, op)
+                verdadero = generador.agregarLabel()
+                salir = generador.agregarLabel()
+                denominador = generador.agregarTemp()
+                generador.agregarExp(denominador, valorDer.valor, '', '')
+                generador.agregarIf(denominador, '0', '==', verdadero)
+                generador.agregarExp(temp, valorIzq.valor, denominador, op)
+                generador.printGoto(salir)
+                generador.printLabel(verdadero)
+                generador.printMathError()
+                generador.llamarFun("mathError")
+                generador.agregarExp(temp, '0', '', '')
+                generador.printLabel(salir)
             elif self.tipo == OperacionAritmetica.MENOS:
                 op = "-"
                 generador.agregarExp(temp, '', valorDer.valor, op)
             elif self.tipo == OperacionAritmetica.MODULO:
-                generador.agregarMod(temp, valorIzq.valor, valorDer.valor)
+                verdadero = generador.agregarLabel()
+                salir = generador.agregarLabel()
+                denominador = generador.agregarTemp()
+                generador.agregarExp(denominador, valorDer.valor, '', '')
+                generador.agregarIf(denominador, '0', '==', verdadero)
+                generador.agregarMod(temp, valorIzq.valor, denominador)
+                generador.printGoto(salir)
+                generador.printLabel(verdadero)
+                generador.printMathError()
+                generador.llamarFun("mathError")
+                generador.agregarExp(temp, '0', '', '')
+                generador.printLabel(salir)
             elif self.tipo == OperacionAritmetica.POTENCIA:
                 generador.potencia()
 
