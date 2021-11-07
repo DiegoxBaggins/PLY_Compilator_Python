@@ -47,9 +47,42 @@ class For(Expresion):
             generador.printLabel(breakl)
             generador.agregarCometario("FIN FOR")
         else:
-            expresion1 = self.exp1.execute(entorno)
+            expresion1 = self.exp1.compilar(entorno)
             if expresion1.tipo == Tipo.STRING:
-                print("soy string")
+                apuntadorString = generador.agregarTemp()
+                continuel = generador.agregarLabel()
+                breakl = generador.agregarLabel()
+                nuevoEntorno.breakl = breakl
+                nuevoEntorno.continuel = continuel
+                generador.agregarCometario("INICION FOR")
+                generador.agregarExp(apuntadorString, expresion1.valor, '', '')
+
+                generador.printLabel(continuel)
+                char = generador.agregarTemp()
+                generador.getHeap(char, apuntadorString)
+                generador.agregarIf(char, '-1', '==', breakl)
+
+                apuntadorHeap = generador.agregarTemp()
+                generador.agregarExp(apuntadorHeap, 'H', '', '')
+                generador.setHeap('H',  char)  # heap[H] = NUM;
+                generador.nextHeap()
+                generador.setHeap('H', '-1')  # FIN DE CADENA
+                generador.nextHeap()
+
+                newVar = nuevoEntorno.guardarVarLocal(idVar, Tipo.STRING, True, self.linea, self.columna)
+                tamano = newVar[1]
+                posicion = newVar[2]
+                tamano += posicion
+                posicion = generador.agregarTemp()
+                generador.agregarExp(posicion, 'P', tamano, "+")
+                generador.setStack(posicion, apuntadorHeap)
+                generador.agregarEspacio()
+
+                self.instrucciones.compilar(nuevoEntorno)
+                generador.agregarExp( apuntadorString,  apuntadorString, '1', '+')
+                generador.printGoto(continuel)
+                generador.printLabel(breakl)
+                generador.agregarCometario("FIN FOR")
             elif expresion1.tipo == Tipo.ARRAY:
                 print("soy array")
             else:
