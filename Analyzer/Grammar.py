@@ -32,13 +32,13 @@ rw = {
     "FUNCTION": "FUNCTION", "RETURN": "RETURN", "WHILE": "WHILE", "FOR": "FOR", "IN": "IN", "BREAK": "BREAK",
     "CONTINUE": "CONTINUE", "STRUCT": "STRUCT", "MUTABLE": "MUTABLE", "PUSH": "PUSH", "POP": "POP", "LENGTH": "LENGTH",
     "LOG10": "LOG10", "LOG": "LOG", "SIN": "SIN", "COS": "COS", "TAN": "TAN", "SQRT": "SQRT", "UPPERCASE": "UPPERCASE",
-    "LOWERCASE": "LOWERCASE", "PARSE": "PARSE", "TRUNC": "TRUNC", "FLOAT": "FLOAT", "TYPEOF": "TYPEOF",
+    "LOWERCASE": "LOWERCASE", "PARSE": "PARSE", "TRUNC": "TRUNC", "FLOAT": "FLOAT", "TYPEOF": "TYPEOF", "VECTOR": "VECTOR"
 }
 
 tokens = [
              "ID", "INTID", "FLOATID", "STRINGID", "CHARID",
              "IGUAL", "PUNTO", "COMA", "DOSPUNTOS", "PUNTOCOMA",
-             "PARIZQ", "PARDER", "CORIZQ", "CORDER",
+             "PARIZQ", "PARDER", "CORIZQ", "CORDER", "LLAVIZQ", "LLAVDER",
              "MAS", "MENOS", "MULT", "DIV", "POT", "MOD",
              "AND", "OR", "NOT",
              "MAYOR", "MENOR", "MAYORIGUAL", "MENORIGUAL", "IGUALES", "DISTINTOS",
@@ -53,6 +53,8 @@ t_PARIZQ = r'\('
 t_PARDER = r'\)'
 t_CORIZQ = r'\['
 t_CORDER = r'\]'
+t_LLAVIZQ = r'\{'
+t_LLAVDER = r'\}'
 t_MAS = r'\+'
 t_MENOS = r'-'
 t_MULT = r'\*'
@@ -339,18 +341,24 @@ def p_tipos(t):
              | FLOAT64
              | STRING
              | BOOL
-             | CHAR'''
+             | CHAR
+             | VECTOR
+             | VECTOR LLAVIZQ tipos LLAVDER'''
     valor = str(t[1])
     if "Int64" in valor:
         t[0] = Tipo.INT
-    if "Float64" in valor:
+    elif "Float64" in valor:
         t[0] = Tipo.FLOAT
-    if "String" in valor:
+    elif "String" in valor:
         t[0] = Tipo.STRING
-    if "Bool" in valor:
+    elif "Bool" in valor:
         t[0] = Tipo.BOOLEAN
-    if "Char" in valor:
+    elif "Char" in valor:
         t[0] = Tipo.CHAR
+    elif len(t) == 5:
+        t[0] = t[3]
+    elif "Vector" in valor:
+        t[0] = Tipo.ARRAY
 
 
 def p_accesos(t):

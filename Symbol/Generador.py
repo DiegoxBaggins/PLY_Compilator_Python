@@ -30,6 +30,7 @@ class Generador:
         self.funcUpper = False
         self.funcLower = False
         self.mathError = False
+        self.outofBounds = False
 
     def limpiarTodo(self):
         # Contadores
@@ -56,6 +57,7 @@ class Generador:
         self.funcUpper = False
         self.funcLower = False
         self.mathError = False
+        self.outofBounds = False
 
     # CODIGO
     def agregarCodigo(self, codigo, tab="\t"):
@@ -547,6 +549,27 @@ class Generador:
         self.agregarPrint("c", 82)
         self.agregarPrint("c", 79)
         self.agregarPrint("c", 82)
+        self.agregarPrint("c", 10)
+        self.cerrarFun()
+        self.enNativa = False
+
+    def printOutBounds(self):
+        if self.outofBounds:
+            return
+        self.outofBounds = True
+        self.enNativa = True
+        self.abrirFun('outOfBounds')
+        self.agregarPrint("c", 79)
+        self.agregarPrint("c", 85)
+        self.agregarPrint("c", 84)
+        self.agregarPrint("c", 79)
+        self.agregarPrint("c", 70)
+        self.agregarPrint("c", 66)
+        self.agregarPrint("c", 79)
+        self.agregarPrint("c", 85)
+        self.agregarPrint("c", 78)
+        self.agregarPrint("c", 68)
+        self.agregarPrint("c", 83)
         self.agregarPrint("c", 10)
         self.cerrarFun()
         self.enNativa = False

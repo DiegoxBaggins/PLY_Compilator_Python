@@ -20,7 +20,7 @@ class Declaracion(Expresion):
         self.tipo = tipo
 
     def chequearTipo(self, valor):
-        if self.tipo == Tipo.UNDEFINED:
+        if self.tipo == Tipo.UNDEFINED or valor.tipo == Tipo.ARRAY:
             return True
         else:
             if valor.tipo != self.tipo:
@@ -45,22 +45,25 @@ class Declaracion(Expresion):
             print("error de tipos")
             return
 
+        if valor.tipo == Tipo.ARRAY:
+            valor.auxTipo = self.tipo
+
         newVar = None
         if self.acceso == TipoAcceso.GLOBAL and self.valor is None:
             entorno.moverGlobal(self.id)
             return
         elif self.acceso == TipoAcceso.GLOBAL:
             newVar = entorno.guardarVarGlobal(self.id, valor.tipo, (valor.tipo == Tipo.STRING
-                                                                      or valor.tipo == Tipo.STRUCT), self.linea,
-                                                self.columna)
+                                                                    or valor.tipo == Tipo.STRUCT), self.linea,
+                                              self.columna, valor.auxTipo)
 
         elif self.acceso == TipoAcceso.LOCAL:
             newVar = entorno.guardarVarLocal(self.id, valor.tipo, (valor.tipo == Tipo.STRING
-                                                                     or valor.tipo == Tipo.STRUCT), self.linea,
-                                               self.columna)
+                                                                   or valor.tipo == Tipo.STRUCT), self.linea,
+                                             self.columna, valor.auxTipo)
         else:
             newVar = entorno.guardarVar(self.id, valor.tipo, (valor.tipo == Tipo.STRING
-                                                                or valor.tipo == Tipo.STRUCT), self.linea, self.columna)
+                                                              or valor.tipo == Tipo.STRUCT), self.linea, self.columna, valor.auxTipo)
 
         var = newVar[0]
         tamano = newVar[1]

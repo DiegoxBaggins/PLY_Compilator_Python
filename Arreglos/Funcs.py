@@ -16,3 +16,34 @@ class FuncArreglo(Expresion):
         self.id = id
         self.exp = exp
         self.tipo = tipo
+
+    def compilar(self, entorno):
+        genAux = Generador()
+        generador = genAux.getInstancia()
+        if self.tipo == FuncionArreglo.LENGTH:
+            generador.agregarCometario("Compilacion de Acceso a Arreglo")
+
+            recibe = entorno.getVar(self.id)
+
+            if recibe is None:
+                print("Error, no existe la variable")
+                return
+            var = recibe[0]
+            print(var.auxTipo)
+            tamano = recibe[1]
+            # Temporal para guardar variable
+            apuntadorStack = generador.agregarTemp()
+
+            # Obtencion de posicion de la variable
+            tempPos = var.posicion
+            if not var.glb:
+                tempPos = generador.agregarTemp()
+                generador.agregarExp(tempPos, 'P', var.posicion + tamano, "+")
+            generador.getStack(apuntadorStack, tempPos)
+
+            tempTamano = generador.agregarTemp()
+            generador.getHeap(tempTamano, apuntadorStack)
+
+            generador.agregarCometario("Fin compilacion acceso")
+            generador.agregarEspacio()
+            return Return(tempTamano, Tipo.INT, True)

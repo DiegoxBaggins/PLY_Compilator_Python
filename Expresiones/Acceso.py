@@ -35,7 +35,7 @@ class Acceso(Expresion):
         if var.tipo != Tipo.BOOLEAN:
             generador.agregarCometario("Fin compilacion acceso")
             generador.agregarEspacio()
-            return Return(temp, var.tipo, True)
+            return Return(temp, var.tipo, True, var.auxTipo)
 
         if self.truel == '':
             self.truel = generador.agregarLabel()

@@ -23,29 +23,29 @@ class Entorno:
         self.simbols = []
         self.errors = []
 
-    def guardarVarGlobal(self, idVar, tipo, enHeap, linea, columna):
+    def guardarVarGlobal(self, idVar, tipo, enHeap, linea, columna, auxTipo=""):
         glb = self.getGlobal()
         if idVar in glb.variables.keys():
             print("variable ya existe")
         else:
-            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, True, enHeap)
+            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano, True, enHeap, auxTipo)
             self.guardarTS(idVar, linea, columna, tipo)
             glb.tamano += 1
             glb.variables[idVar] = nuevoSimbolo
         var = glb.variables[idVar]
         return [var, 0, var.posicion]
 
-    def guardarVarLocal(self, idVar, tipo, enHeap, linea, columna):
+    def guardarVarLocal(self, idVar, tipo, enHeap, linea, columna, auxTipo=""):
         if idVar in self.variables.keys():
             print("Variable ya existe")
         else:
-            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano - self.prev.tamano, self.prev is None, enHeap)
+            nuevoSimbolo = Simbolo(idVar, tipo, self.tamano - self.prev.tamano, self.prev is None, enHeap, auxTipo)
             self.guardarTS(idVar, linea, columna, tipo)
             self.tamano += 1
             self.variables[idVar] = nuevoSimbolo
         return [self.variables[idVar], self.prev.tamano, self.variables[idVar].posicion]
 
-    def guardarVar(self, idVar, tipo, enHeap, linea, columna):
+    def guardarVar(self, idVar, tipo, enHeap, linea, columna, auxTipo=""):
         entorno = self
         while True:
             if idVar in entorno.variables.keys():
@@ -60,7 +60,7 @@ class Entorno:
             else:
                 entorno = entorno.prev
 
-        nuevoSimbolo = Simbolo(idVar, tipo,  self.tamano - self.prev.tamano, self.prev is None, enHeap)
+        nuevoSimbolo = Simbolo(idVar, tipo,  self.tamano - self.prev.tamano, self.prev is None, enHeap, auxTipo)
         self.guardarTS(idVar, linea, columna, tipo)
         self.tamano += 1
         self.variables[idVar] = nuevoSimbolo
