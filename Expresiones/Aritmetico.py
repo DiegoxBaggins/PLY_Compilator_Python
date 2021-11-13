@@ -88,7 +88,7 @@ class Aritmetico(Expresion):
 
                 generador.getStack(temp, 'P')
                 generador.regresarEnt(entorno.tamano)
-            return Return(temp, Tipo.INT, True)
+            return Return(temp, Tipo.FLOAT, True)
         elif valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.STRING:
             if self.tipo == OperacionAritmetica.MULTI:
                 print("concatenacion")

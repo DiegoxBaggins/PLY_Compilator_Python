@@ -1,1 +1,1 @@
-[["a", "ARRAY", "GLOBAL", 4, 0]]
+[["SerieFibonacciRecursiva", "Funcion", "GLOBAL", 120, 0], ["n", "INT", "SerieFibonacciRecursiva", 120, 0], ["serie1", "INT", "SerieFibonacciRecursiva", 126, 0], ["serie2", "INT", "SerieFibonacciRecursiva", 127, 0], ["sumarSerieFibonacciRecursiva", "Funcion", "GLOBAL", 132, 0], ["n", "INT", "sumarSerieFibonacciRecursiva", 132, 0], ["serie1", "INT", "sumarSerieFibonacciRecursiva", 134, 0], ["serie2", "INT", "sumarSerieFibonacciRecursiva", 135, 0], ["multiplicarImpares", "Funcion", "GLOBAL", 146, 0], ["n", "INT", "multiplicarImpares", 146, 0]]

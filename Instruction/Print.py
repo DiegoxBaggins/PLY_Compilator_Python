@@ -23,7 +23,9 @@ class Print(Expresion):
 
 
 def cuerpo(entorno, generador, valor):
-    if valor.tipo == Tipo.INT or valor.tipo == Tipo.FLOAT:
+    if valor.tipo == Tipo.INT:
+        generador.agregarPrint("d", valor.valor)
+    elif valor.tipo == Tipo.FLOAT:
         generador.agregarPrint("f", valor.valor)
     elif valor.tipo == Tipo.BOOLEAN:
         generador.printBolean()
