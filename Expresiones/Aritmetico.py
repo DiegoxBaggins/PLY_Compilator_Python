@@ -89,7 +89,7 @@ class Aritmetico(Expresion):
                 generador.getStack(temp, 'P')
                 generador.regresarEnt(entorno.tamano)
             return Return(temp, Tipo.INT, True)
-        if valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.STRING:
+        elif valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.STRING:
             if self.tipo == OperacionAritmetica.MULTI:
                 print("concatenacion")
                 generador.concatenarStr()
@@ -110,7 +110,7 @@ class Aritmetico(Expresion):
                 return Return(temp, Tipo.STRING, True)
             else:
                 print("error")
-        if valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.INT:
+        elif valorIzq.tipo == Tipo.STRING and valorDer.tipo == Tipo.INT:
             if self.tipo == OperacionAritmetica.POTENCIA:
                 print("concatenacion")
                 generador.multiplicarStr()
@@ -130,4 +130,5 @@ class Aritmetico(Expresion):
                 generador.regresarEnt(entorno.tamano)
                 return Return(temp, Tipo.STRING, True)
             else:
-                print("error")
+                entorno.guardarError("Operacion con tipos no reconocidos", self.linea, self.columna)
+                return Return(0, Tipo.INT, False)

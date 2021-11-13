@@ -79,8 +79,8 @@ class Relacional(Expresion):
 
             der = self.der.compilar(entorno)
             if der.tipo != Tipo.BOOLEAN:
-                print("Error, no se pueden comparar")
-                return
+                entorno.guardarError("No se pueden comparar tipos", self.linea, self.columna)
+                return Return(False, Tipo.BOOLEAN, False)
             irFinal = generador.agregarLabel()
             dertemp = generador.agregarTemp()
 

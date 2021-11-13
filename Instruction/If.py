@@ -19,7 +19,7 @@ class If(Expresion):
         condicion = self.condicion.compilar(entorno)
 
         if condicion.tipo != Tipo.BOOLEAN:
-            print('Error, condicion no booleana')
+            entorno.guardarError("Condificion en IF no booleana", self.linea, self.columna)
             return
 
         generador.printLabel(condicion.truel)

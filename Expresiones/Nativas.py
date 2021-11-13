@@ -45,3 +45,6 @@ class Nativo(Expresion):
             generador.getStack(temp, 'P')
             generador.regresarEnt(entorno.tamano)
             return Return(temp, Tipo.STRING, True)
+        else:
+            entorno.guardarError("Operacion no reconocida", self.linea, self.columna)
+            return Return(0, Tipo.INT, False)

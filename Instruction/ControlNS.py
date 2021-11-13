@@ -29,5 +29,5 @@ class ControlIns(Expresion):
             elif self.tipo == Tipo.RETURNINS:
                 generador.printGoto(entorno.returnl)
         else:
-            "Fuera de ciclo"
+            entorno.guardarError("Instruccion de control fuera de ciclo", self.linea, self.columna)
             return

@@ -10,7 +10,7 @@ class ReturnIns(Expresion):
 
     def compilar(self, entorno):
         if entorno.returnl == '':
-            print("Return fuera de funcion")
+            entorno.guardarError("Return Fuera de Funcion", self.linea, self.columna)
             return
         genAux = Generador()
         generator = genAux.getInstancia()

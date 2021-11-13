@@ -17,8 +17,8 @@ class Acceso(Expresion):
         recibe = entorno.getVar(self.id)
 
         if recibe is None:
-            print("Error, no existe la variable")
-            return
+            entorno.guardarError("Var no existe", self.linea, self.columna)
+            return Return(0, Tipo.INT, False)
         var = recibe[0]
         tamano = recibe[1]
         # Temporal para guardar variable

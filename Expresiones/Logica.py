@@ -40,8 +40,8 @@ class Logica(Expresion):
             self.izq.falsel = self.truel
             izq = self.izq.compilar(entorno)
             if izq.tipo != Tipo.BOOLEAN:
-                print("No se puede utilizar en expresion booleana")
-                return
+                entorno.guardarError("Solo Booleanos adimitidos en logicos", self.linea, self.columna)
+                return Return(False, Tipo.BOOLEAN, False)
             generador.agregarCometario("FINALIZO EXPRESION LOGICA")
             generador.agregarEspacio()
             ret = Return(None, Tipo.BOOLEAN, False)
@@ -50,13 +50,13 @@ class Logica(Expresion):
             return ret
         izq = self.izq.compilar(entorno)
         if izq.tipo != Tipo.BOOLEAN:
-            print("No se puede utilizar en expresion booleana")
-            return
+            entorno.guardarError("Solo Booleanos adimitidos en logicos", self.linea, self.columna)
+            return Return(False, Tipo.BOOLEAN, False)
         generador.printLabel(lblAndOr)
         der = self.der.compilar(entorno)
         if der.tipo != Tipo.BOOLEAN:
-            print("No se puede utilizar en expresion booleana")
-            return
+            entorno.guardarError("Solo Booleanos adimitidos en logicos", self.linea, self.columna)
+            return Return(False, Tipo.BOOLEAN, False)
         generador.agregarCometario("FINALIZO EXPRESION LOGICA")
         generador.agregarEspacio()
         ret = Return(None, Tipo.BOOLEAN, False)

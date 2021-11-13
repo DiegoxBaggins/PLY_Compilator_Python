@@ -21,7 +21,7 @@ class AsignacionArreglo(Expresion):
         recibe = entorno.getVar(varId)
 
         if recibe is None:
-            print("Error, no existe la variable")
+            entorno.guardarError("Var no existe", self.linea, self.columna)
             return
         var = recibe[0]
         tamano = recibe[1]

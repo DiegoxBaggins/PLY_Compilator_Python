@@ -55,3 +55,6 @@ class LlamadaFunc(Expresion):
                 return ret
             else:
                 return Return(temp, func.tipo, True)
+        else:
+            entorno.guardarError("Funcion no existe", self.linea, self.columna)
+            return Return(0, Tipo.INT, False)

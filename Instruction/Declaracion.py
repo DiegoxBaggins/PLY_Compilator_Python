@@ -20,7 +20,7 @@ class Declaracion(Expresion):
         self.tipo = tipo
 
     def chequearTipo(self, valor):
-        if self.tipo == Tipo.UNDEFINED or valor.tipo == Tipo.ARRAY:
+        if self.tipo == Tipo.UNDEFINED or valor.tipo == Tipo.ARRAY or self.tipo == Tipo.ARRAY:
             return True
         else:
             if valor.tipo != self.tipo:
@@ -42,7 +42,7 @@ class Declaracion(Expresion):
 
         generador.agregarCometario("Fin de valor de variable")
         if not self.chequearTipo(valor):
-            print("error de tipos")
+            entorno.guardarError("Error de tipos en la declaracion", self.linea, self.columna)
             return
 
         if valor.tipo == Tipo.ARRAY:

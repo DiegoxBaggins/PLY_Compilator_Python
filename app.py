@@ -46,8 +46,12 @@ def reports():  # put application's code here
     if request.method == "POST":
         tipoEntrada = request.form['procesar']
         if tipoEntrada == "Simbolos":
+            with open('simbols.json') as json_file:
+                simbolos = json.load(json_file)
             bandVar = True
         elif tipoEntrada == "Errores":
+            with open('errors.json') as json_file:
+                errores = json.load(json_file)
             bandErr = True
         elif tipoEntrada == "Optimizacion":
             bandOpt = True
@@ -63,14 +67,20 @@ if __name__ == '__main__':
 
 
 def compilar(entrada):
+    codigo = ""
     genAux = Generador()
     genAux.limpiarTodo()
     generador = genAux.getInstancia()
-    # generador.limpiarTodo()
 
     newEnv = Entorno(None, "GLOBAL")
     ast = parse(entrada)
     for instr in ast:
         instr.compilar(newEnv)
-    codigo = generador.getCodigo()
+    codigo += generador.getCodigo()
+    errores = newEnv.errors
+    with open('errors.json', 'w') as outfile:
+        json.dump(errores, outfile)
+    variables = newEnv.simbols
+    with open('simbols.json', 'w') as outfile:
+        json.dump(variables, outfile)
     return codigo
