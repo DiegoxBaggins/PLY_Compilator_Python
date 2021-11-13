@@ -40,7 +40,7 @@ class For(Expresion):
             # variable = consulta.compilar(nuevoEntorno)
             # generador.agregarExp(variable.valor, variable.valor, '1', '+')
             aritmetica = Aritmetico(consulta, Literal(1, Tipo.INT, self.linea, self.columna), OperacionAritmetica.SUMA, self.linea, self.columna)
-            actualizacion = Declaracion(TipoAcceso.LOCAL, idVar, aritmetica, Tipo.INT, self.linea, self.columna)
+            actualizacion = Declaracion(TipoAcceso.LOCAL, idVar, aritmetica, Tipo.FLOAT, self.linea, self.columna)
             actualizacion.compilar(nuevoEntorno)
             # generador.setStack()
             generador.printGoto(continuel)
@@ -79,7 +79,7 @@ class For(Expresion):
                 generador.agregarEspacio()
 
                 self.instrucciones.compilar(nuevoEntorno)
-                generador.agregarExp( apuntadorString,  apuntadorString, '1', '+')
+                generador.agregarExp(apuntadorString,  apuntadorString, '1', '+')
                 generador.printGoto(continuel)
                 generador.printLabel(breakl)
                 generador.agregarCometario("FIN FOR")
